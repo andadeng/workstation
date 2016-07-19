@@ -1,0 +1,103 @@
+<template name="AdminLayout">
+  {{#if AdminConfig}}
+  {{#if isInRole 'admin'}}
+  <div class="admin-layout">
+    {{# AdminLTE skin=admin_skin }}
+      {{> AdminHeader }}
+      {{> AdminSidebar }}
+      <div class="content-wrapper" style="min-height: {{minHeight}}">
+        <section class="content-header">
+          <h1>
+            {{$.Session.get 'admin_title'}}
+            <small>{{$.Session.get 'admin_subtitle'}}</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="/admin/">{{AdminConfig.sidebar.dashboard.name}}</a></li>
+            {{#if $.Session.get 'admin_collection_name'}}
+              <li><a href="/admin/{{$.Session.get 'admin_collection_name'}}/">
+                {{adminCollectionLabel admin_collection_name}}
+              </a></li>
+            {{/if}}
+
+            {{#if $.Session.equals 'admin_collection_page' 'new'}}
+              <li>New</li>
+            {{/if}}
+
+            {{#if $.Session.equals 'admin_collection_page' 'edit'}}
+              <li>Edit</li>
+            {{/if}}
+          </ol>
+        </section>
+        <section class="content">
+          {{> yield }}
+        </section>
+      </div>
+      {{> AdminFooter }}
+    {{/ AdminLTE }}
+  </div>
+  {{> AdminDeleteModal }}
+  {{else}}
+  {{> NotAdmin}}
+  {{/if}}
+  {{else}}
+  {{> NoConfig}}
+  {{/if}}
+</template>
+
+<template name="AdminDeleteModal">
+  <div class="modal fade" id="admin-delete-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">确认删除</h4>
+        </div>
+        <div class="modal-body">
+          <p>确定要删除这些内容？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <button type="button" id="confirm-delete" class="btn btn-danger">删除</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>
+
+<template name="NotAdmin">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <p class="alert alert-info" style="margin-top:100px;">
+          你必须以管理员身份访问当前页面！
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="NoConfig">
+  <p class="alert alert-info">
+    如需使用Admin控制面板，你需要定义AdminConfig对象。
+    <br/>
+    可以按如下方式设置并管理“Post”和“Comment”集合：
+    <br/>
+    <code>
+      AdminConfig = {
+        <br/>
+        adminEmails: ['	andy.deng@kyl.biz'],
+        <br/>
+        collections:
+        <br/>
+        {
+          <br/>
+          Posts: {},
+          <br/>
+          Comments: {}
+          <br/>
+        }
+        <br/>
+      }
+    </code>
+  </p>
+</template>

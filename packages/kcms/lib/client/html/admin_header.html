@@ -1,0 +1,49 @@
+<template name="AdminHeader">
+		<header class="main-header">
+				<a href="/admin" class="logo">
+						{{#if AdminConfig.name}}
+						<span class="logo-mini"><b>{{AdminConfig.name.first_name}}</b>{{AdminConfig.name.mini_name}}</span>
+						<span class="logo-lg"><b>{{AdminConfig.name.first_name}}</b>{{AdminConfig.name.large_name}}</span>
+						{{else}}
+						Admin
+						{{/if}}
+				</a>
+				<nav class="navbar navbar-static-top" role="navigation">
+						<!-- Sidebar toggle button-->
+						<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</a>
+						<div class="navbar-custom-menu">
+								<ul class="nav navbar-nav">
+										<li>
+												{{#if AdminConfig.dashboard.homeUrl}}
+												<a href="{{AdminConfig.dashboard.homeUrl}}">返回主页</a>
+												{{else}}
+												<a href="/">返回主页</a>
+												{{/if}}
+
+										</li>
+										<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+														<span>后台管理<i class="caret"></i></span>
+												</a>
+												<ul class="dropdown-menu">
+														<li class="">
+														<a href="{{pathFor 'adminDashboardUsersEdit' _id=currentUser._id}}">
+																个人资料
+																</a>
+														</li>
+														<li class="">
+																<a href="#" class="btn-sign-out">退出登录
+																</a>
+														</li>
+												</ul>
+										</li>
+								</ul>
+						</div>
+				</nav>
+		</header>
+</template>

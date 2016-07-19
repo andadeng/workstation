@@ -1,0 +1,209 @@
+<template name="AdminDashboard">
+	{{#each adminWidgets}}
+	{{> UI.dynamic template=template data=data}}
+	{{else}}
+	{{> adminDefaultWidgets}}
+	{{/each}}
+</template>
+
+<template name="AdminDashboardNew">
+	{{> adminAlert}}
+	{{#if adminTemplate admin_collection_name 'new'}}
+		{{#with adminTemplate admin_collection_name 'new'}}
+		{{> UI.dynamic template=name data=data }}
+		{{/with}}
+	{{else}}
+		<div class="box box-default">
+			<div class="box-body">
+				{{> quickForm id="admin_insert" collection=admin_collection fields=admin_fields omitFields=admin_omit_fields buttonContent='新增'}}
+			</div>
+		</div>
+	{{/if}}
+</template>
+
+<template name="AdminDashboardEdit">
+	{{> adminAlert}}
+	{{#if adminTemplate admin_collection_name 'edit'}}
+		{{#with adminTemplate admin_collection_name 'edit'}}
+		{{> UI.dynamic template=name data=data }}
+		{{/with}}
+	{{else}}
+		<div class="box box-default">
+			<div class="box-body">
+				{{#if admin_current_doc}}
+				{{> quickForm id="admin_update" collection=admin_collection doc=admin_current_doc fields=admin_fields omitFields=admin_omit_fields buttonContent='更新'}}
+				{{/if}}
+			</div>
+		</div>
+	{{/if}}
+</template>
+
+<template name="AdminDashboardSub">
+	{{> adminAlert}}
+	{{#if adminTemplate admin_collection_name 'view'}}
+		{{#with adminTemplate admin_collection_name 'view'}}
+		{{> UI.dynamic template=name data=data }}
+		{{/with}}
+	{{else}}
+		{{#if hasDocuments1}}
+			{{> tabular table=admin_table selector=selector class="table dataTable"}}
+		{{else}}
+			<div class="alert alert-info">
+				<p>抱歉，当前模块并没有可用的数据。可以试着点击下方按钮，新增数据。</p>
+				<p><a href="{{newPathSub}}" class="btn btn-primary"><i class="fa fa-plus"></i> 新增</a></p>
+			</div>
+		{{/if}}
+	{{/if}}
+</template>
+
+<template name="AdminDashboardViewWrapper">
+	<div></div>
+	{{! This template is used to manually re-render AdminDashboardView on route transition }}
+</template>
+
+<template name="AdminDashboardView">
+	{{> adminAlert}}
+	{{#if adminTemplate admin_collection_name 'view'}}
+		{{#with adminTemplate admin_collection_name 'view'}}
+		{{> UI.dynamic template=name data=data }}
+		{{/with}}
+	{{else}}
+		{{#if hasDocuments}}
+			{{> tabular table=admin_table class="table dataTable"}}
+		{{else}}
+			<div class="alert alert-info">
+				<p>抱歉，当前模块并没有可用的数据。可以试着点击下方按钮，新增数据。</p>
+				<p><a href="{{newPath}}" class="btn btn-primary"><i class="fa fa-plus"></i> 新增</a></p>
+			</div>
+		{{/if}}
+	{{/if}}
+</template>
+
+<template name="AdminDashboardUsersNew">
+	<div class="box box-default">
+		<div class="box-body">
+			{{> adminAlert}}
+			{{# autoForm id="adminNewUser" schema=AdminSchemas.newUser type="method" meteormethod="adminNewUser"}}
+
+			{{>afQuickField name="email"}}
+			{{>afQuickField name="chooseOwnPassword"}}
+
+			{{#if afFieldValueIs name="chooseOwnPassword" value=false}}
+
+			{{>afQuickField name="password"}}
+			{{>afQuickField name="sendPassword"}}
+
+			{{/if}}
+
+			<button type="submit" class="btn btn-primary">Add User</button>
+
+			{{/autoForm}}
+		</div>
+	</div>
+</template>
+
+<template name="AdminDashboardUsersEdit">
+	<div class="box box-default">
+		<div class="box-body">
+			{{> adminAlert}}
+			{{#if adminGetUserSchema}}
+			{{> quickForm id="adminUpdateUser" buttonContent="更新" buttonClasses="btn btn-primary btn-sm" collection=adminGetUsers schema=adminGetUserSchema doc=admin_current_doc omitFields="roles,services"}}
+			<hr/>
+			{{/if}}
+
+			<h4>用户权限</h4>
+			{{#each roles}}
+			<button class="btn btn-primary btn-xs btn-remove-role" role="{{this}}" user="{{admin_current_id}}">{{this}}</button>
+			{{/each}}
+			{{#each otherRoles}}
+			<button class="btn btn-default btn-xs btn-add-role" role="{{this}}" user="{{admin_current_id}}">{{this}}</button>
+			{{/each}}
+			{{#if roles}}
+			<p style="margin-top:5px;">点击更改权限。</p>
+			{{else}}
+			<p>用户未有任何权限，点击增加用户权限。</p>
+			{{/if}}
+
+			<hr/>
+			<h4>重置密码</h4>
+			{{#autoForm id="adminSendResetPasswordEmail" schema=AdminSchemas.sendResetPasswordEmail type="method" meteormethod="adminSendResetPasswordEmail"}}
+			<div class="form-group hidden">
+				<label class="control-label" for="title">ID</label>
+				<input value="{{admin_current_id}}" type="text" name="_id" omitfields="createdAtupdatedAt" required="" data-schema-key="_id" class="form-control" autocomplete="off" />
+				<span class="help-block"></span>
+			</div>
+			<p>发送重置密码的邮件至邮箱： {{admin_current_doc.emails.[0].address}}。</p>
+			<button type="submit" class="btn btn-primary btn-sm">发送邮件</button>
+			{{/autoForm}}
+
+			<hr/>
+			<h4>更改密码</h4>
+			{{#autoForm id="adminChangePassword" schema=AdminSchemas.changePassword type="method" meteormethod="adminChangePassword"}}
+			<div class="form-group hidden">
+				<label class="control-label" for="title">ID</label>
+				<input value="{{admin_current_id}}" type="text" name="_id" omitfields="createdAtupdatedAt" required="" data-schema-key="_id" class="form-control" autocomplete="off" />
+				<span class="help-block"></span>
+			</div>
+			{{>afQuickField name="password"}}
+			<button type="submit" class="btn btn-primary btn-sm">更改密码</button>
+			{{/autoForm}}
+		</div>
+	</div>
+</template>
+
+<template name="adminAlert">
+	{{#if $.Session.get 'adminSuccess'}}
+	<div class="alert alert-success admin-alert">
+		{{$.Session.get 'adminSuccess'}}
+	</div>
+	{{/if}}
+
+	{{#if $.Session.get 'adminError'}}
+	<div class="alert alert-danger admin-alert">
+		{{$.Session.get 'adminError'}}
+	</div>
+	{{/if}}
+</template>
+
+<template name="adminUsersIsAdmin">
+	{{#if adminIsUserInRole this._id 'admin'}}<i class="fa fa-check"></i>{{/if}}
+</template>
+
+<template name="adminUsersMailBtn">
+	<a href="mailto:{{adminUserEmail this}}" class="btn btn-default btn-xs"><i class="fa fa-envelope"></i></a>
+</template>
+
+<template name="adminEditBtn">
+	<a href="{{path}}" class="hidden-xs btn btn-xs btn-primary"><i class="fa fa-pencil"></i></a>
+	<a href="{{path}}" class="visible-xs btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+</template>
+
+<template name="adminSubBtn">
+	<a href="{{path}}" class="hidden-xs btn btn-xs btn-primary"><i class="fa fa-arrow-right"></i></a>
+	<a href="{{path}}" class="visible-xs btn btn-sm btn-primary"><i class="fa fa-arrow-right"></i> Sub</a>
+</template>
+
+<template name="adminDeleteBtn">
+	<a data-toggle="modal" doc="{{_id}}" href='#admin-delete-modal' class="hidden-xs btn btn-xs btn-danger btn-delete"><i class="fa fa-times" doc="{{_id}}"></i></a>
+	<a data-toggle="modal" doc="{{_id}}" href='#admin-delete-modal' class="visible-xs btn btn-sm btn-danger btn-delete"><i class="fa fa-times" doc="{{_id}}"></i> 删除</a>
+</template>
+
+<template name="userEmail">
+	{{username}}
+</template>
+
+<template name="dateTime">
+	{{dateTime}}
+</template>
+
+<template name="loading">
+正在加载中...
+</template>
+
+<template name="column_level">
+	{{{level_string}}}
+</template>
+
+<template name="localeString">
+	{{localeString}}
+</template>

@@ -1,0 +1,63 @@
+<template name="html">
+	<div class="box">
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form role="form">
+      <div class="box-body">
+      
+        <div class="form-group">
+          <label>选择模块</label>
+          <select class="form-control">
+          {{#each collections}}
+						{{#if isHTML}}
+				    <option value="{{name}}">{{label}}</option>
+				    {{/if}}
+					{{/each}}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>选择栏目</label>
+          <select class="form-control">
+          {{#each columns}}
+            <option value="{{name}}">{{name}}</option>
+          {{/each}}
+          </select>
+        </div>
+
+      </div>
+      <!-- /.box-body -->
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<template name="htmlGen">
+  <div class="box">
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form role="form">
+      <div class="box-body">
+        <div class="form-group">
+          <label>选择模块</label>
+          <select class="form-control">
+          {{#each collections}}
+            {{#if isHTML}}
+            <option value="{{name}}">{{label}}</option>
+            {{/if}}
+          {{/each}}
+          </select>
+        </div>
+      </div>
+      <!-- /.box-body -->
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+    </form>
+  </div>
+</template>
+
