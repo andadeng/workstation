@@ -86,18 +86,21 @@ AdminConfig = {
       label: '生成管理',
       icon: 'code',
       routes: {
-        new: {waitOn: function(){return Meteor.subscribe('columns')}},
-        edit: {waitOn: function(){return Meteor.subscribe('columns')}},
-        view: {waitOn: function(){return Meteor.subscribe('columns')}}
+        new: {waitOn: function(){return Meteor.subscribe('columns'), Meteor.subscribe('templates')}},
+        // edit: {waitOn: function(){return Meteor.subscribe('columns'), Meteor.subscribe('templates')}},
+        view: {waitOn: function(){return Meteor.subscribe('columns'), Meteor.subscribe('templates')}}
       },
       tableColumns: [
-        { label: '任务名称', name: 'title'},
-        { label: '生成栏目', name: 'allpath', template: 'column_level'},
-        // { label: '生成模板', name: 'template_id', template: 'template_name'},
-        { label: '时间', name: 'createdAt', template: 'localeString'}
-      ]
+        // { label: '任务名称', name: 'title'},
+        { label: '生成模板', name: 'template_id', template: 'template_name'},
+        // { label: '所在栏目', name: 'allpath', template: 'column_level'},
+        { label: '生成文件', name: 'filename', template: 'file_name'},
+        { label: '操作人', name: 'owner', template: 'user'},
+        { label: '时间', name: 'createdAt', template: 'localDate'}
+      ],
+      showEditColumn: false,
+      // showDelColumn: false
     }
-    
   }
   // Disable editing of user fields:
   // userSchema: null

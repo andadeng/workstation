@@ -26,6 +26,13 @@ Template.AdminHeader.onRendered(function () {
   // $("body").addClass('sidebar-collapse');
 })
 
+Template.AdminFooter.helpers({
+  nowYear: function(){
+    var now = new Date();
+    return now.getFullYear();
+  }
+})
+
 dataTableOptions = {
     "aaSorting": [],
     "bPaginate": true,
@@ -53,8 +60,32 @@ Template.column_level.helpers({
   }
 }) 
 
-Template.localeString.helpers({
-  localeString: function(){
-    return this.value.localeString();
+Template.localDate.helpers({
+  localDate: function(){
+    return this.value.toLocaleString();
+  }
+})
+
+Template.user.helpers({
+  user: function(){
+    if (this.value){
+      return Meteor.users.findOne({_id: this.value}).emails[0].address;
+    }
+  }
+})
+
+Template.template_name.helpers({
+  template_name: function(){
+    if (this.value){
+      return Templates.findOne({_id: this.value}).title;
+    }
+  }
+})
+
+Template.file_name.helpers({
+  file_name: function(){
+    if (this.value){
+      return "<a href=/"+this.value+" target=_blank>"+this.value+"</a>";
+    }
   }
 })

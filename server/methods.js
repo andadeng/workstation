@@ -1,19 +1,6 @@
 Meteor.methods({
-  createTemplate: function(doc, data){
-    // var compiled = SpacebarsCompiler.compile(doc.content, { isBody: true });
-    // var fn = eval(compiled);
-    // console.log(fn)
-    // var html = Blaze.renderWithData(fn, data);
-    // console.log(html)
-    // var saved_content = Spacebars.toHTML(data, doc.content);
+  createTemplate: function(doc){
     var saved_path = process.env.PWD+'/private/';
-    // switch(doc.type){
-    //   case 0:
-    //     saved_path += 'includes';breaks;
-    //   case 1:
-    //     saved_path += doc.module;breaks;
-    // }
-    // console.log(saved_content);
     fs.writeFile(saved_path + doc.filename, doc.content, (err)=> {
       if (!err){
         console.log('file saved:'+doc.filename)
@@ -22,9 +9,17 @@ Meteor.methods({
       }
     })
   },
-	createHTML: function(doc, data){
+	createHTML: function(doc){
     var saved_path = process.env.PWD+'/public/';
-		fs.writeFile(saved_path + doc.filename, doc.content, (err)=> {
+    
+    if (doc.template_id)
+      var content = Templates.findOne({_id: doc.template_id}).content;
+
+    var data = {newsList: {newsList:Articles.find({},{sort:{createAt:-1}}).fetch()}};
+
+    var html = Spacebars.toHTML(data, content);
+
+		fs.writeFile(saved_path + doc.filename, html, (err)=> {
       if (!err){
         console.log('file saved:'+doc.filename)
       }else{

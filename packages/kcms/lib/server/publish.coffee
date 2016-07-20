@@ -44,13 +44,8 @@ Meteor.publish 'adminCollectionsCount', ->
 Meteor.publish null, ->
 	Meteor.roles.find({})
 
-# Meteor.publish 'columns', ->
-# 	Columns.find()
-
 Meteor.publish 'columns', ->
-	# WorkLog.find(currentUser);
-	Columns.find();
+	Columns.find({});
 
-Meteor.publish 'news', ->
-	# WorkLog.find(currentUser);
-	News.find();
+Meteor.publish 'templates', ->
+	Templates.find({});

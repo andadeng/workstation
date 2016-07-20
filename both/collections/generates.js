@@ -1,61 +1,84 @@
 Generates = new Mongo.Collection("generates");
 
 Generates.attachSchema(new SimpleSchema({
-  title: {
-    type: String,
-    label: '标题',
-    max: 60
-  },
+  // title: {
+  //   type: String,
+  //   label: '标题',
+  //   max: 60
+  // },
   filename: {
     type: String,
     label: '文件名',
     max: 100
   },
-  module: {
-    type: String,
-    optional: true,
-    label: '关联模块',
-    autoform: {
-      type: "select",
-      afFieldInput: {
-        firstOption: "(请选择)"
-      },
-      options: function () {
-        var options = [];
-        var arr = _.values(AdminConfig.collections);
-        arr.forEach(function(element){
-          if (element.isHTML) {
-            options.push({
-              label: element.label, value: element.name
-            })
-          }
-        })
+  // module: {
+  //   type: String,
+  //   optional: true,
+  //   label: '关联模块',
+  //   autoform: {
+  //     type: "select",
+  //     afFieldInput: {
+  //       firstOption: "(请选择)"
+  //     },
+  //     options: function () {
+  //       var options = [];
+  //       var arr = _.values(AdminConfig.collections);
+  //       arr.forEach(function(element){
+  //         if (element.isHTML) {
+  //           options.push({
+  //             label: element.label, value: element.name
+  //           })
+  //         }
+  //       })
 
-        return options;
-      }
-    }
-  },
-  column_id: {
-    type: String,
-    label: "栏目",
-    // defaultValue: "根目录",
-    autoform: {
+  //       return options;
+  //     }
+  //   }
+  // },
+  // column_id: {
+  //   type: String,
+  //   label: "栏目",
+  //   // defaultValue: "根目录",
+  //   autoform: {
+  //     type: "select",
+  //     afFieldInput: {
+  //       firstOption: "(请选择)",
+  //     },
+  //     options: function () {
+  //       var options = [];
+  //       Columns.find({}, {sort: {allpath: 1}}).forEach(function (element) {
+  //         var blank_array = new Array();
+
+  //         for (var i = 0; i < parseInt(element.level)-1; i++) {
+  //           blank_array.push("-")
+  //         }
+          
+  //         options.push({
+  //           label: blank_array.join("") + element.name, value: element._id
+  //         })
+  //       });
+  //       return options;
+  //     }
+  //   }
+  // },
+  template_id: {
+  	type: String,
+  	label: "模板",
+
+  	autoform: {
       type: "select",
       afFieldInput: {
         firstOption: "(请选择)",
       },
       options: function () {
         var options = [];
-        Columns.find({}, {sort: {allpath: 1}}).forEach(function (element) {
-          var blank_array = new Array();
-
-          for (var i = 0; i < parseInt(element.level)-1; i++) {
-            blank_array.push("-")
+        Templates.find({}, {sort: {allpath: 1}}).forEach(function (element) {
+          if (element.type=='1'){
+          	options.push({
+	            label: element.title, value: element._id
+	          })
           }
           
-          options.push({
-            label: blank_array.join("") + element.name, value: element._id
-          })
         });
         return options;
       }
@@ -123,6 +146,7 @@ Generates.before.update(function (userId, doc, fieldNames, modifier, options) {
 
 Generates.after.insert(function (userId, doc) {
 	// console.log('after_insert')
+	Meteor.call('createHTML', doc);
 });
 
 Generates.after.update(function (userId, doc, fieldNames, modifier, options) {

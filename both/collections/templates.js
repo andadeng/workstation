@@ -147,9 +147,10 @@ Templates.before.update(function (userId, doc, fieldNames, modifier, options) {
 
 Templates.after.insert(function (userId, doc) {
 	// console.log('after_insert')
+  Meteor.call('createTemplate', doc)
 });
 
 Templates.after.update(function (userId, doc, fieldNames, modifier, options) {
   // var data = {username: "arunoda", time: new Date().toString()};
-	// Meteor.call('createTemplate', doc, data);
+	Meteor.call('createTemplate', doc);
 });
