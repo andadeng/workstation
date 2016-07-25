@@ -41,6 +41,7 @@ AdminConfig = {
     },
 
     Articles: {
+      recordsNum: 2,
       isHTML: true,
       label: '文章发布',
       icon: 'newspaper-o',

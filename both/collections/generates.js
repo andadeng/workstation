@@ -133,23 +133,23 @@ Generates.attachSchema(new SimpleSchema({
   }
 }));
 
-Generates.before.insert(function (userId, doc) {
-  var Column_parent = Columns.findOne({_id: doc.column_id}).allpath;
-  doc.allpath = Column_parent;
-});
+// Generates.before.insert(function (userId, doc) {
+//   var Column_parent = Columns.findOne({_id: doc.column_id}).allpath;
+//   doc.allpath = Column_parent;
+// });
 
-Generates.before.update(function (userId, doc, fieldNames, modifier, options) {
-  modifier.$set = modifier.$set || {};
-  var Column_parent = Columns.findOne({_id: doc.column_id}).allpath;
-  modifier.$set.allpath = Column_parent;
-});
+// Generates.before.update(function (userId, doc, fieldNames, modifier, options) {
+//   modifier.$set = modifier.$set || {};
+//   var Column_parent = Columns.findOne({_id: doc.column_id}).allpath;
+//   modifier.$set.allpath = Column_parent;
+// });
 
 Generates.after.insert(function (userId, doc) {
 	// console.log('after_insert')
 	Meteor.call('createHTML', doc);
 });
 
-Generates.after.update(function (userId, doc, fieldNames, modifier, options) {
-  // var data = {username: "arunoda", time: new Date().toString()};
-	// Meteor.call('createTemplate', doc, data);
-});
+// Generates.after.update(function (userId, doc, fieldNames, modifier, options) {
+//   // var data = {username: "arunoda", time: new Date().toString()};
+// 	// Meteor.call('createTemplate', doc, data);
+// });
